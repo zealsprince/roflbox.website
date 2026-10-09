@@ -100,6 +100,65 @@
   outline-offset: 2px;
 }
 
+/* =====================================================================
+   Color-mode tokens
+   Applied when data-color-mode="dark|light" is set on <html>.
+   These rules are intentionally placed AFTER all [data-bg-theme] blocks
+   in this file. Both selectors have attribute-selector specificity (0,1,0),
+   so CSS cascade order guarantees the color-mode rules win when both
+   attributes are present on <html> — no combined selector overrides needed.
+
+   Dark mode — coherent dark UI; mirrors the existing :root palette so
+   the default experience is unchanged until the user toggles.
+   ===================================================================== */
+[data-color-mode="dark"] {
+  --text-primary: hsl(120 100% 75%);
+  --text-secondary: hsl(300 70% 80%);
+  --surface-1: hsl(280 80% 12%);
+  --surface-2: hsl(270 100% 8%);
+  --border-color: hsl(300 100% 75%);
+  --button-bg: hsl(320 100% 60%);
+  --button-text: hsl(120 100% 95%);
+}
+
+/* Light mode — readable light surfaces for prolonged use. */
+[data-color-mode="light"] {
+  --text-primary: hsl(240 10% 10%);
+  --text-secondary: hsl(240 5% 40%);
+  --surface-1: hsl(0 0% 98%);
+  --surface-2: hsl(240 5% 93%);
+  --border-color: hsl(240 5% 75%);
+  --button-bg: hsl(240 5% 20%);
+  --button-text: hsl(0 0% 98%);
+
+  /* Override Shadcn/Tailwind design-system HSL tokens so that every
+     component using bg-card, text-card-foreground, text-muted-foreground,
+     border, etc. automatically adapts to the light theme. */
+  --background: 0 0% 96%;
+  --foreground: 240 10% 10%;
+  --card: 0 0% 98%;
+  --card-foreground: 240 10% 10%;
+  --popover: 0 0% 98%;
+  --popover-foreground: 240 10% 10%;
+  --primary: 240 5% 20%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 5% 90%;
+  --secondary-foreground: 240 10% 10%;
+  --muted: 240 5% 90%;
+  --muted-foreground: 240 5% 40%;
+  --accent: 240 5% 85%;
+  --accent-foreground: 240 10% 10%;
+  --border: 240 5% 75%;
+  --input: 0 0% 93%;
+  --ring: 240 5% 30%;
+}
+
+/* Visible focus ring in light mode */
+[data-color-mode="light"] :focus-visible {
+  outline: 2px solid hsl(240 5% 30%);
+  outline-offset: 2px;
+}
+
 @layer utilities {
   .border-rainbow {
     border-image: linear-gradient(45deg, #ff00ff, #00ff00, #ff8000, #ffff00, #00ffff, #ff0080, #8000ff, #ff00ff) 1;

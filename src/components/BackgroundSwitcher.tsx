@@ -2,13 +2,23 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { BG_THEMES, type BgTheme } from '@/lib/themes'
 import { useTutorial } from '@/lib/tutorial'
+import { type ColorModePreference, type ColorMode } from '@/lib/colorMode'
 
 interface BackgroundSwitcherProps {
   currentThemeId: string
   onThemeChange: (theme: BgTheme) => void
+  colorModePreference: ColorModePreference
+  resolvedColorMode: ColorMode
+  onColorModeChange: (pref: ColorModePreference) => void
 }
 
-export function BackgroundSwitcher({ currentThemeId, onThemeChange }: BackgroundSwitcherProps) {
+export function BackgroundSwitcher({
+  currentThemeId,
+  onThemeChange,
+  colorModePreference,
+  resolvedColorMode,
+  onColorModeChange,
+}: BackgroundSwitcherProps) {
   const [open, setOpen] = useState(false)
   const { start: startTutorial, completed: tutorialCompleted } = useTutorial()
 
@@ -62,6 +72,43 @@ export function BackgroundSwitcher({ currentThemeId, onThemeChange }: Background
               </button>
             ))}
           </div>
+
+          {/* Color mode selector */}
+          <div className="mt-2 pt-2 border-t border-white/10">
+            <div className="text-white/40 font-mono text-xs mb-1.5 tracking-wider">COLOR MODE:</div>
+            <div
+              role="radiogroup"
+              aria-label="Color mode"
+              className="flex gap-1"
+            >
+              {(['system', 'light', 'dark'] as const).map((pref) => {
+                const labels = { system: 'System', light: 'Light', dark: 'Dark' }
+                const isSelected = colorModePreference === pref
+                return (
+                  <button
+                    key={pref}
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-label={`${labels[pref]} color mode${pref === 'system' ? ` (currently ${resolvedColorMode})` : ''}`}
+                    onClick={() => onColorModeChange(pref)}
+                    className={`flex-1 text-xs font-mono py-1 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
+                      isSelected
+                        ? 'bg-white/25 text-white border border-white/40'
+                        : 'text-white/50 hover:text-white/80 hover:bg-white/10 border border-transparent'
+                    }`}
+                  >
+                    {labels[pref]}
+                  </button>
+                )
+              })}
+            </div>
+            {colorModePreference === 'system' && (
+              <div className="text-white/30 font-mono text-xs mt-1">
+                effective: {resolvedColorMode}
+              </div>
+            )}
+          </div>
+
           <div className="mt-2 pt-2 border-t border-white/10">
             <button
               onClick={() => {

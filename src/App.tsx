@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BackgroundSwitcher } from '@/components/BackgroundSwitcher'
 import { BG_THEMES, DEFAULT_THEME_ID, type BgTheme } from '@/lib/themes'
+import { useColorMode } from '@/lib/colorMode'
 import { TutorialProvider } from '@/components/TutorialProvider'
 import { TutorialOverlay } from '@/components/TutorialOverlay'
 import { useTutorial } from '@/lib/tutorial'
@@ -28,6 +29,9 @@ function App() {
   const [isBlinking, setIsBlinking] = useState(false)
   const [matrixText, setMatrixText] = useState('INITIALIZING...')
   const [chaosMode, setChaosMode] = useState(false)
+
+  // Color mode state – persisted in localStorage under 'roflbox.colorMode'
+  const { preference: colorModePreference, resolvedMode: resolvedColorMode, setColorMode } = useColorMode()
 
   // Background theme state – persisted in localStorage
   const [currentTheme, setCurrentTheme] = useState<BgTheme>(() => {
@@ -102,8 +106,14 @@ function App() {
         className={`min-h-screen flex flex-col items-center justify-start p-4 relative ${chaosClass('perspective-crazy')}`}
         style={{ overflow: 'visible', background: currentTheme.value }}
       >
-        {/* Background theme switcher */}
-        <BackgroundSwitcher currentThemeId={currentTheme.id} onThemeChange={handleThemeChange} />
+        {/* Background theme + dark mode switcher */}
+        <BackgroundSwitcher
+          currentThemeId={currentTheme.id}
+          onThemeChange={handleThemeChange}
+          colorModePreference={colorModePreference}
+          resolvedColorMode={resolvedColorMode}
+          onColorModeChange={setColorMode}
+        />
       
       {/* FLOATING CHAOS - ABSOLUTE POSITIONED MADNESS - Only in chaos mode */}
       {chaosMode && (
